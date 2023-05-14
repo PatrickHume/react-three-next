@@ -1,109 +1,57 @@
-import { Box, Plane, Sphere, Text } from '@react-three/drei'
-import React, { useEffect, useRef, useState, Suspense } from 'react'
-import * as THREE from 'three'
-import { Canvas, useThree, useFrame } from '@react-three/fiber'
-import { Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
+import React, { Suspense, useRef } from 'react'
+import { Canvas, useLoader, useFrame, extend, useThree } from '@react-three/fiber'
+import { PointerLockControls } from '@react-three/drei'
 
-import Model from './Plane'
+import WasdControls from './WASDControls'
+import Spitfire from './Spitfire'
 
-function generateBoxesFromString(str) {
-    const boxes = []
-    for (let i = 0; i < str.length; i++) {
-        boxes.push({ position: [0, i * (1.1), 0], letter: str[i] })
-    }
-    return boxes
-}
+// Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
+extend({ PointerLockControls })
 
-function PhyPlane({ color, ...props }) {
-    const [ref] = usePlane(() => ({ ...props }))
-
+function Loading() {
     return (
-        <Plane args={[1000, 1000]} ref={ref}>
-            <meshStandardMaterial color={color} />
-        </Plane>
+        <mesh visible position={[0, 0, 0]} rotation={[0, 0, 0]}>
+            <sphereGeometry attach="geometry" args={[1, 16, 16]} />
+            <meshStandardMaterial attach="material" color="white" transparent opacity={0.6} roughness={1} metalness={0} />
+        </mesh>
     )
 }
 
-function PhyBox({ position, letter, ...props }) {
-    const dimensions = [0.8, 1.0, 0.25];
-    const [ref, api] = useBox(() => ({ args: dimensions, mass: 500, position: position, ...props }))
-    const { scene } = useThree()
-    const arrow = useRef(new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 1, 0xff0000, 0.2, 0.2))
-    useEffect(() => {
-        scene.add(arrow.current)
-    }, [])
+const CameraControls = () => {
+    // Get a reference to the Three.js Camera, and the canvas html element.
+    // We need these to setup the OrbitControls class.
+    // https://threejs.org/docs/#examples/en/controls/OrbitControls
+
+    const {
+        camera,
+        gl: { domElement }
+    } = useThree()
+
+    // Ref to the controls, so that we can update them on every frame using useFrame
+    const controls = useRef()
+    useFrame((state) => controls.current.update())
     return (
-        <Box
-            args={dimensions}
-            ref={ref}
-            onClick={(event) => {
-                const normal = event.face.normal.clone()
-                normal.transformDirection(event.object.matrixWorld)
-                normal.normalize()
-                normal.multiplyScalar(30.0)
-
-                api.applyImpulse(normal.toArray(), event.point.toArray())
-            }}
-            onPointerMove={(event) => {
-                const normal = event.face.normal.clone();
-                normal.transformDirection(event.object.matrixWorld);
-                normal.normalize();
-
-                arrow.current.setDirection(normal);
-                arrow.current.position.copy(event.point);
-            }}
-            onPointerEnter={(event) => {
-
-            }}
-            onPointerLeave={(event) => {
-
-            }}>
-            {/* Add Text component with letter */}
-            <Text position={[0, 0, dimensions[2] + 0.01]} fontSize={1} color="black" anchorX="center" anchorY="middle" children={letter} />
-            <meshStandardMaterial color="white" />
-        </Box >
-    )
-}
-
-function SphereCursor(props) {
-    const [ref, api] = useSphere(() => ({ args: [1.0], position: [0, 5, 0], ...props }))
-    const [mousePos, setMousePos] = useState([0, 0])
-
-    useFrame(({ mouse }) => {
-        const [x, y] = mousePos
-        const [mx, my] = [mouse.x, mouse.y]
-        const tx = THREE.MathUtils.lerp(x, mx, 0.1)
-        const ty = THREE.MathUtils.lerp(y, my, 0.1)
-        setMousePos([tx, ty])
-        api.position.set(tx * 5, ty * 5, 0)
-    })
-
-    return (
-        <Sphere ref={ref} args={[0.1, 32, 32]} visible={true}>
-            <meshStandardMaterial />
-        </Sphere>
+        <OrbitControls
+            ref={controls}
+            args={[camera, domElement]}
+            enableZoom={false} // highlight-line
+            maxAzimuthAngle={Math.PI / 4} // highlight-line
+            maxPolarAngle={Math.PI} // highlight-line
+            minAzimuthAngle={-Math.PI / 4} // highlight-line
+            minPolarAngle={0} // highlight-line
+        />
     )
 }
 
 export function Game({ route = '/blob', ...props }) {
-    const boxes = generateBoxesFromString('This is a big long message.')
-
     return (
-        <Canvas camera={{ fov: 75, position: [0, 0, 20], near: 0.1, far: 1000 }} style={{ background: 'white' }}>
-            <Physics gravity={[0, -10, 0]}>
-                <PhyPlane color="white" position={[0, -0.51, 0]} rotation={[-Math.PI / 2, 0, 0]} />
-                {boxes.map((box, i) => (
-                    <PhyBox key={i} position={box.position} letter={box.letter} />
-                ))}
-                {/*<SphereCursor />*/}
-            </Physics>
-
-            <Suspense fallback={null}>
-                <Model />
+        <Canvas style={{ background: 'white' }}>
+            <directionalLight intensity={0.5} />
+            <Suspense fallback={<Loading />}>
+                <Spitfire />
             </Suspense>
-
-            <ambientLight intensity={0.3} />
-            <pointLight intensity={0.8} position={[5, 0, 5]} />
+            <PointerLockControls />
+            <WasdControls />
         </Canvas>
     )
 }
