@@ -1,8 +1,10 @@
 import { Box, Plane, Sphere, Text } from '@react-three/drei'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, Suspense } from 'react'
 import * as THREE from 'three'
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
+
+import Model from './Plane'
 
 function generateBoxesFromString(str) {
     const boxes = []
@@ -95,6 +97,11 @@ export function Game({ route = '/blob', ...props }) {
                 ))}
                 {/*<SphereCursor />*/}
             </Physics>
+
+            <Suspense fallback={null}>
+                <Model />
+            </Suspense>
+
             <ambientLight intensity={0.3} />
             <pointLight intensity={0.8} position={[5, 0, 5]} />
         </Canvas>
