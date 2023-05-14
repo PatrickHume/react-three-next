@@ -17,38 +17,12 @@ function Loading() {
     )
 }
 
-const CameraControls = () => {
-    // Get a reference to the Three.js Camera, and the canvas html element.
-    // We need these to setup the OrbitControls class.
-    // https://threejs.org/docs/#examples/en/controls/OrbitControls
-
-    const {
-        camera,
-        gl: { domElement }
-    } = useThree()
-
-    // Ref to the controls, so that we can update them on every frame using useFrame
-    const controls = useRef()
-    useFrame((state) => controls.current.update())
-    return (
-        <OrbitControls
-            ref={controls}
-            args={[camera, domElement]}
-            enableZoom={false} // highlight-line
-            maxAzimuthAngle={Math.PI / 4} // highlight-line
-            maxPolarAngle={Math.PI} // highlight-line
-            minAzimuthAngle={-Math.PI / 4} // highlight-line
-            minPolarAngle={0} // highlight-line
-        />
-    )
-}
-
 export function Game({ route = '/blob', ...props }) {
     return (
         <Canvas style={{ background: 'white' }}>
             <directionalLight intensity={0.5} />
             <Suspense fallback={<Loading />}>
-                <Model name='supermarine_spitfire' />
+                <Model name='animals/Fox' scale={0.005} />
             </Suspense>
             <PointerLockControls />
             <WasdControls />

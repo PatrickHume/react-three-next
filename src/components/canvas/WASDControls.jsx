@@ -40,5 +40,9 @@ export default function WasdControls() {
     if (code.current.has('KeyS')) moveForward(-delta * speed)
     if (code.current.has('KeyD')) moveRight(delta * speed)
   })
+  useEffect(() => {
+    camera.position.setComponent(1, 2.0);
+  }, [])
+
   return null
 }
