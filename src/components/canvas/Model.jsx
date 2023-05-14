@@ -18,7 +18,7 @@ export default function Model({ name, scale = 1.0, ...props }) {
 
     /* Play eating animation. */
     useEffect(() => {
-        actions['AnimalArmature|Eating'].play();
+        actions['AnimalArmature|Walk'].play();
     }, []);
 
     /* Return model */

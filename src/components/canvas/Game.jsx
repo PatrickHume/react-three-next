@@ -22,7 +22,7 @@ export function Game({ route = '/blob', ...props }) {
         <Canvas style={{ background: 'white' }}>
             <directionalLight intensity={0.5} />
             <Suspense fallback={<Loading />}>
-                <Model name='animals/Fox' scale={0.005} />
+                <Model name='animals/Deer' scale={0.005} />
             </Suspense>
             <PointerLockControls />
             <WasdControls />

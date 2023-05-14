@@ -42,6 +42,7 @@ export default function WasdControls() {
   })
   useEffect(() => {
     camera.position.setComponent(1, 2.0);
+    camera.fov = 90;
   }, [])
 
   return null
