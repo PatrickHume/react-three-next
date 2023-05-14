@@ -3,7 +3,7 @@ import { Canvas, useLoader, useFrame, extend, useThree } from '@react-three/fibe
 import { PointerLockControls } from '@react-three/drei'
 
 import WasdControls from './WASDControls'
-import Spitfire from './Spitfire'
+import Model from './Model'
 
 // Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
 extend({ PointerLockControls })
@@ -48,7 +48,7 @@ export function Game({ route = '/blob', ...props }) {
         <Canvas style={{ background: 'white' }}>
             <directionalLight intensity={0.5} />
             <Suspense fallback={<Loading />}>
-                <Spitfire />
+                <Model name='supermarine_spitfire' />
             </Suspense>
             <PointerLockControls />
             <WasdControls />
