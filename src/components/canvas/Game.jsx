@@ -30,16 +30,17 @@ export function Game({ route = '/blob', ...props }) {
             frameloop="demand">
 
             <EffectComposer>
-                <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={1.0} height={480} />
+                <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2.0} height={480} />
                 {/* <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} /> */}
                 <Noise opacity={0.1} />
                 {/* <Vignette eskil={false} offset={0.1} darkness={1.1} /> */}
             </EffectComposer>
 
-            {/* <directionalLight intensity={0.5} /> */}
+            {/* <ambientLight intensity={0.2} />
+            <pointLight position={[1800, -1, 3000]} intensity={2.0} /> */}
             {/* <Environment preset="forest" background /> */}
             <Suspense fallback={<Loading />}>
-                {/* <Model name='animals/Deer' scale={0.01} /> */}
+                <Model name='boats/sailboat' scale={0.5} rotation={[0, 0.7, 0]} position={[120, -1, 300]} sway={true} />
                 <Sunset />
                 <Environment files="/stars.hdr" background />
                 {/* <Environment preset="forest" background /> */}
@@ -48,7 +49,6 @@ export function Game({ route = '/blob', ...props }) {
             <Camera />
             {/* <PointerLockControls /> */}
             {/* <WasdControls /> */}
-
 
             {/* <Stats /> */}
         </Canvas>

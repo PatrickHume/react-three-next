@@ -15,12 +15,16 @@ export default function Sunset() {
     const { invalidate } = useThree()
 
     const ref = useRef()
+    const lightRef = useRef()
+    const ambientRef = useRef()
 
     let height
     let opacity
     let darkness
     let rayleigh
     let mieCoefficient
+    let intensity
+    let ambientIntensity
 
     const vec = new THREE.Vector3(5, 0.25, 8)
 
@@ -38,6 +42,9 @@ export default function Sunset() {
         ref.current.material.fragmentShader = ref.fragmentShader
         ref.current.material.uniforms.opacity = { "value": 1.0 };
         ref.current.material.uniforms.darkness = { "value": 1.0 };
+
+        lightRef.current.intensity = 0.05
+        ambientRef.current.intensity = 0.05
     }, [])
 
     useFrame((_, delta) => {
@@ -63,18 +70,30 @@ export default function Sunset() {
         mieCoefficient = 0.005 + (ref.time - 2.0) * 0.005
         mieCoefficient = clamp(mieCoefficient, 0.005, 0.010)
         ref.current.material.uniforms.mieCoefficient = { "value": mieCoefficient };
+
+        intensity = 0.05 + (ref.time - 0.5)
+        intensity = clamp(intensity, 0.05, 2.0)
+        lightRef.current.intensity = intensity
+
+        ambientIntensity = 0.05 + (ref.time - 0.5) * 0.25
+        ambientIntensity = clamp(ambientIntensity, 0.05, 0.9)
+        ambientRef.current.intensity = ambientIntensity
     })
     return (
-        <Sky
-            ref={ref}
-            distance={5000}
-            rayleigh={3.0}
-            inclination={0.0}
-            azimuth={0}
-            turbidity={1}
-            mieCoefficient={0.005}
-            mieDirectionalG={0.8}
-            sunPosition={vec}
-        />
+        <>
+            <ambientLight ref={ambientRef} intensity={0.2} />
+            <pointLight ref={lightRef} position={[1800, -1, 3000]} intensity={2.0} />
+            <Sky
+                ref={ref}
+                distance={5000}
+                rayleigh={3.0}
+                inclination={0.0}
+                azimuth={0}
+                turbidity={1}
+                mieCoefficient={0.005}
+                mieDirectionalG={0.8}
+                sunPosition={vec}
+            />
+        </>
     )
 }
