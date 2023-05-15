@@ -27,16 +27,17 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 export default function Page() {
   return (
     <>
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row  lg:w-4/5'>
-        <div className='flex w-full flex-col items-start justify-center p-2 text-center md:w-2/5 md:text-left'>
-          <p className='w-full uppercase'>React-Three Demo</p>
+      <div className="flex flex-col h-screen">
+        <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row  lg:w-4/5'>
+          <div className='flex w-full flex-col items-start justify-center p-2 text-center md:w-2/5 md:text-left'>
+            <p className='w-full uppercase'>React-Three Demo</p>
+          </div>
         </div>
-      </div>
-
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center p-0 md:flex-row  lg:w-4/5'>
-        {/* first row */}
-        <div className='relative aspect-video w-full py-2 md:my-12 md:mb-20'>
+        <div className="flex-1 w-full mx-auto text-lg bg-white h-full">
           <Game />
+        </div>
+        <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <p className='text-white drop-shadow-lg'>React-Three Demo</p>
         </div>
       </div>
     </>
