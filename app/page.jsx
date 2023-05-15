@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
+import Typewriter from "typewriter-effect";
 
 const Logo = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Logo), { ssr: false })
 const Dog = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Dog), { ssr: false })
@@ -37,7 +38,19 @@ export default function Page() {
           <Game />
         </div>
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
-          <p className='text-white drop-shadow-lg'>React-Three Demo</p>
+          <div className='text-white drop-shadow-lg'>
+            <Typewriter
+              onInit={(typewriter) => {
+                typewriter
+                  .pauseFor(3000)
+                  .changeDelay(75)
+                  .pauseFor(2000)
+                  .typeString("This site was made using ")
+                  .changeDelay(100)
+                  .typeString("Next.js and @react-three/fiber.")
+                  .start();
+              }}
+            /></div>
         </div>
       </div>
     </>
